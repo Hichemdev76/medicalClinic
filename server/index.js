@@ -8,6 +8,8 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import { register } from "./controllers/auth.js";
+import authRoutes from "./routes/auth.js";
 
 /* CONFIGURATION */
 
@@ -38,12 +40,20 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+/* ROUTES WITH FILEs*/
+app.post("/auth/register", upload.single("picture"), register);
+
+/* ROUTES */
+app.use("/auth", authRoutes);
+
 /* MONGOOSE SETUP*/
 const PORT = process.env.PORT || 6001;
-mongoose.set('strictQuery', false);
+mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
-    app.listen(PORT, () => console.log(`Database connected, Server PORT: ${PORT}`));
+    app.listen(PORT, () =>
+      console.log(`Database connected, Server PORT: ${PORT}`)
+    );
   })
   .catch((err) => console.log(`${err}, Database did not connect`));
