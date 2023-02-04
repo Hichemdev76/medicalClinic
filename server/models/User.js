@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
-    isAdmin: {
-      type: Boolean,
-      default: false,
+    role: {
+      type: String,
+      enum: ["user", "serviceChef", "admin"],
+      default: "user",
     },
     firstName: {
       type: String,
@@ -20,18 +21,15 @@ const UserSchema = new mongoose.Schema(
     },
     dateOfBirth: {
       type: Date,
-      required: true,
     },
     status: {
       type: String,
-      required: true,
     },
     address: {
       type: String,
-      required: true,
     },
     level: {
-      type: String,
+      type: Number,
       required: true,
     },
     lineOfWork: {
@@ -56,6 +54,10 @@ const UserSchema = new mongoose.Schema(
     picturePath: {
       type: String,
       default: "",
+    },
+    isArchived: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
