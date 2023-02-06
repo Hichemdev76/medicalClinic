@@ -23,7 +23,7 @@ import {
   PieChartOutlined,
   AddCircleOutlineOutlined,
   UpdateOutlined,
-  PeopleOutlineOutlined
+  PeopleOutlineOutlined,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -71,14 +71,7 @@ const navItems = [
     text: "Service 1",
     icon: <PointOfSaleOutlined />,
   },
-  {
-    text: "Service 1",
-    icon: <PointOfSaleOutlined />,
-  },
-  {
-    text: "Service 1",
-    icon: <PointOfSaleOutlined />,
-  },
+
   {
     text: "Add Service",
     icon: <AddCircleOutlineOutlined />,
@@ -155,7 +148,7 @@ const Sidebar = ({
                 )}
               </FlexBetween>
             </Box>
-            <List >
+            <List>
               {navItems.map(({ text, icon }) => {
                 if (!icon) {
                   return (
@@ -185,7 +178,6 @@ const Sidebar = ({
                     >
                       <ListItemIcon
                         sx={{
-                          
                           ml: "2rem",
                           color:
                             active === lcText

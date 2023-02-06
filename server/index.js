@@ -11,7 +11,7 @@ import { fileURLToPath } from "url";
 import { register } from "./controllers/auth.js";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
-// import serviceRoutes from "./routes/services.js";
+import serviceRoutes from "./routes/services.js";
 
 
 
@@ -50,7 +50,7 @@ app.post("/register", upload.single("picture"), register);
 /* ROUTES */
 app.use("/", authRoutes);
 app.use("/users", userRoutes);
-// app.use("/services", serviceRoutes);
+app.use("/services", serviceRoutes);
 
 /* MONGOOSE SETUP*/
 const PORT = process.env.PORT || 6001;
