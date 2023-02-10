@@ -89,6 +89,10 @@ const navItems = [
     icon: null,
   },
   {
+    text: "Congé",
+    icon: <PieChartOutlined />,
+  },
+  {
     text: "Archives",
     icon: <AdminPanelSettingsOutlined />,
   },
@@ -113,7 +117,6 @@ const Sidebar = ({
     setActive(pathname.substring(1));
   }, [pathname]);
 
-  console.log(user);
   return (
     <Box component="nav">
       {isSidebarOpen && (
@@ -199,7 +202,7 @@ const Sidebar = ({
           </Box>
           <Box
             // position="fixed"
-            marginTop="-0.5rem"
+            marginTop="1.5rem"
             // paddingBottom="1rem"
             // backgroundColor={theme.palette.background.alt}
           >

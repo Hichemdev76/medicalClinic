@@ -9,7 +9,8 @@ import {
 } from "@mui/icons-material";
 import FlexBetween from "components/FlexBetween";
 import { useDispatch } from "react-redux";
-import { setMode } from "state";
+import { setMode, setLogout } from "state";
+import { useNavigate } from "react-router-dom";
 import profileImage from "assets/profile.jpg";
 import {
   AppBar,
@@ -22,14 +23,15 @@ import {
   useTheme,
 } from "@mui/material";
 
-const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
+const Navbar = ({ user,isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const theme = useTheme();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
-
+  // const [anchorEl, setAnchorEl] = useState(null);
+  // const handleClick = (event) => setAnchorEl(event.currentTarget);
+  // const handleClose = () => setAnchorEl(null);
+  const fullName = `${user.firstName} ${user.lastName}`;
   return (
     <AppBar
       sx={{
@@ -71,7 +73,6 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           </IconButton>
           <FlexBetween>
             <Button
-              onClick={handleClick}
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -95,23 +96,25 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 textAlign="left"
                 alignItems="center"
               >
-                <Box>
+                <Box
+                  onClick={() => navigate("/profile")}
+                  sx={{ "&:hover": { cursor: "pointer" } }}
+                >
                   <Typography
                     fontWeight="bold"
                     fontSize="0.85rem"
                     sx={{ color: theme.palette.secondary[100] }}
                   >
-                   {user.firstName === undefined ? "":user.firstName.toUpperCase()}
+                    {user.firstName === undefined ? "" : fullName.toUpperCase()}
                   </Typography>
                   <Typography
                     fontSize="0.75rem"
                     sx={{ color: theme.palette.secondary[200] }}
                   >
-                    {user.role===undefined ? "": user.role}
+                    {user.role === undefined ? "" : user.role}
                   </Typography>
                 </Box>
                 <LogoutOutlined
-                  onClick={handleClose}
                   sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
                 />
               </Box>

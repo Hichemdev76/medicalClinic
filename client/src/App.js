@@ -6,30 +6,44 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { themeSettings } from "theme";
 import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
-// import Products from "scenes/products";
 import Users from "scenes/users";
-// import Transactions from "scenes/transactions";
-// import Overview from "scenes/overview";
-// import Daily from "scenes/daily";
-// import Monthly from "scenes/monthly";
-// import Breakdown from "scenes/breakdown";
-// import Admin from "scenes/admin";
-// import Performance from "scenes/performance";
-
+import LoginPage from "scenes/login";
 function App() {
   const mode = useSelector((state) => state.global.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+  const token = useSelector((state) => state.global.token);
+  const isAuth = Boolean(token);
   return (
     <div className="app">
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Routes>
+            <Route
+              path="/login"
+              element={
+                isAuth ? <Navigate to="/dashboard" replace /> : <LoginPage />
+              }
+            />
             <Route element={<Layout />}>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route
+                path="/"
+                element={
+                  isAuth ? (
+                    <Navigate to="/dashboard" replace />
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                }
+              />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/users" element={<Users />} />
-              {/* <Route path="/products" element={<Products />} />
+            </Route>
+            {/* <Route element={<Layout />}>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/users" element={<Users />} /> */}
+            {/* <Route path="/products" element={<Products />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/transactions" element={<Transactions />} />
               <Route path="/overview" element={<Overview />} />
@@ -38,7 +52,7 @@ function App() {
               <Route path="/breakdown" element={<Breakdown />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/performance" element={<Performance />} /> */}
-            </Route>
+            {/* </Route> */}
           </Routes>
         </ThemeProvider>
       </BrowserRouter>
