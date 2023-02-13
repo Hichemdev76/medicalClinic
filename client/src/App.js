@@ -8,6 +8,11 @@ import Layout from "scenes/layout";
 import Dashboard from "scenes/dashboard";
 import Users from "scenes/users";
 import LoginPage from "scenes/login";
+import AddUser from "scenes/addUser";
+import User from "scenes/userProfile";
+import Archives from "scenes/archives";
+import Leave from "scenes/Leave";
+
 function App() {
   const mode = useSelector((state) => state.global.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
@@ -38,6 +43,10 @@ function App() {
               />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/users" element={<Users />} />
+              <Route path="/archives" element={<Archives />} />
+              <Route path="/congé" element={<Leave />} />
+              <Route path="/profile/:userId" element={<User />} />
+              <Route path="/add" element={<AddUser />} />
             </Route>
             {/* <Route element={<Layout />}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />

@@ -35,11 +35,15 @@ const Form = () => {
   const isLogin = pageType === "login";
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch(`${process.env.REACT_APP_BASE_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
+    console.log(values);
+    const loggedInResponse = await fetch(
+      `${process.env.REACT_APP_BASE_URL}/login`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      }
+    );
     const loggedIn = await loggedInResponse.json();
     onSubmitProps.resetForm();
     if (loggedIn) {
@@ -73,7 +77,7 @@ const Form = () => {
       }) => (
         <form onSubmit={handleSubmit}>
           <Box
-          mt="30px"
+            mt="30px"
             display="grid"
             gap="30px"
             gridTemplateColumns="repeat(4, minmax(0, 1fr))"
@@ -114,9 +118,12 @@ const Form = () => {
                 p: "1rem",
                 backgroundColor: palette.primary.main,
                 color: palette.background.alt,
-                fontSize:"1rem",
-                fontWeight:"600",
-                "&:hover": { color: palette.primary.main, backgroundColor:palette.secondary[300] },
+                fontSize: "1rem",
+                fontWeight: "600",
+                "&:hover": {
+                  color: palette.primary.main,
+                  backgroundColor: palette.secondary[300],
+                },
               }}
             >
               {isLogin ? "LOGIN" : "REGISTER"}
@@ -146,4 +153,4 @@ const Form = () => {
   );
 };
 
-export default Form
+export default Form;

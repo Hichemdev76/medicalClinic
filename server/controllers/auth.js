@@ -6,35 +6,41 @@ import User from "../models/User.js";
 export const register = async (req, res) => {
   try {
     const {
-      isAdmin,
+      role,
       firstName,
       lastName,
       dateOfBirth,
-      status,
       address,
+      status,
+      sex,
       level,
-      lineOfWork,
+      jobTitle,
       affiliation,
       email,
       password,
       picturePath,
+      isArchived,
+      payedLeaveDaysLeft,
     } = req.body;
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     const newUser = new User({
-      isAdmin,
+      role,
       firstName,
       lastName,
       dateOfBirth,
-      status,
       address,
+      status,
       level,
-      lineOfWork,
+      sex,
+      jobTitle,
       affiliation,
       email,
       password: passwordHash,
       picturePath,
+      isArchived,
+      payedLeaveDaysLeft,
     });
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
@@ -45,7 +51,7 @@ export const register = async (req, res) => {
 
 /* LOGIN IN */
 export const login = async (req, res) => {
-  console.log(req.body)
+  console.log(req.body);
   try {
     const { email, password } = req.body;
     const user = await User.findOne({

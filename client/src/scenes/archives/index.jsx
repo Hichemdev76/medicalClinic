@@ -1,15 +1,15 @@
 import React from "react";
 import { Box, useTheme } from "@mui/material";
-import { useGetUsersQuery } from "state/api";
+import { useGetArchivedUsersQuery } from "state/api";
 import Header from "components/Header";
 import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 
-const Users = () => {
+const Archives = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { data, isLoading } = useGetUsersQuery();
-  // console.log(data);
+  const { data, isLoading } = useGetArchivedUsersQuery();
+  console.log(data);
   const columns = [
     {
       field: "_id",
@@ -91,4 +91,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Archives;

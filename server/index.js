@@ -13,8 +13,6 @@ import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import serviceRoutes from "./routes/services.js";
 
-
-
 /* CONFIGURATION */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,12 +38,11 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     cb(null, file.originalname);
   },
-  
 });
 const upload = multer({ storage });
 
 /* ROUTES WITH FILEs*/
-app.post("/register", upload.single("picture"), register);
+app.post("/addUser", upload.single("picture"), register);
 
 /* ROUTES */
 app.use("/", authRoutes);
@@ -61,6 +58,5 @@ mongoose
     app.listen(PORT, () =>
       console.log(`Database connected, Server PORT: ${PORT}`)
     );
-    
   })
   .catch((err) => console.log(`${err}, Database did not connect`));

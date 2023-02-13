@@ -20,7 +20,10 @@ const UserSchema = new mongoose.Schema(
       max: 50,
     },
     dateOfBirth: {
-      type: Date,
+      type: String,
+    },
+    sex: {
+      type: String,
     },
     status: {
       type: String,
@@ -32,7 +35,7 @@ const UserSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    lineOfWork: {
+    jobTitle: {
       type: String,
       required: true,
     },
@@ -58,6 +61,10 @@ const UserSchema = new mongoose.Schema(
     isArchived: {
       type: Boolean,
       default: false,
+    },
+    payedLeaveDaysLeft: {
+      type: Number,
+      default: 30,
     },
   },
   { timestamps: true }

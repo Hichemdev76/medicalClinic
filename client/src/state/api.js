@@ -14,7 +14,7 @@ export const api = createApi({
     },
   }),
   reducerPath: "adminApi",
-  tagTypes: ["User", "Users"],
+  tagTypes: ["User", "Users", "ArchivedUsers"],
   endpoints: (build) => ({
     getUser: build.query({
       query: (id) => `users/${id}`,
@@ -24,7 +24,11 @@ export const api = createApi({
       query: () => "users/all",
       providesTags: ["Users"],
     }),
+    getArchivedUsers: build.query({
+      query: () => "users/archives",
+      providesTags: ["ArchivedUsers"],
+    }),
   }),
 });
 
-export const { useGetUserQuery, useGetUsersQuery } = api;
+export const { useGetUserQuery, useGetUsersQuery, useGetArchivedUsersQuery } = api;
