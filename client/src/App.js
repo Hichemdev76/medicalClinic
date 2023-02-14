@@ -41,12 +41,36 @@ function App() {
                   )
                 }
               />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/users" element={<Users />} />
-              <Route path="/archives" element={<Archives />} />
-              <Route path="/congé" element={<Leave />} />
-              <Route path="/profile/:userId" element={<User />} />
-              <Route path="/add" element={<AddUser />} />
+              <Route
+                path="/dashboard"
+                element={
+                  isAuth ? <Dashboard /> : <Navigate to="/login" replace />
+                }
+              />
+              <Route
+                path="/users"
+                element={isAuth ? <Users /> : <Navigate to="/login" replace />}
+              />
+              <Route
+                path="/archives"
+                element={
+                  isAuth ? <Archives /> : <Navigate to="/login" replace />
+                }
+              />
+              <Route
+                path="/congé"
+                element={isAuth ? <Leave /> : <Navigate to="/login" replace />}
+              />
+              <Route
+                path="/profile/:userId"
+                element={isAuth ? <User /> : <Navigate to="/login" replace />}
+              />
+              <Route
+                path="/add"
+                element={
+                  isAuth ? <AddUser /> : <Navigate to="/login" replace />
+                }
+              />
             </Route>
             {/* <Route element={<Layout />}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />

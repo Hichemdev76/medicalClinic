@@ -114,7 +114,7 @@ const Navbar = ({ user,isSidebarOpen, setIsSidebarOpen }) => {
                     {user.role === undefined ? "" : user.role}
                   </Typography>
                 </Box>
-                <LogoutOutlined
+                <LogoutOutlined onClick={() => dispatch(setLogout())}
                   sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
                 />
               </Box>
