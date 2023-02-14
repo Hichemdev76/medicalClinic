@@ -25,6 +25,7 @@ const Leave = () => {
         width="90%"
         direction={isNonMobile ? "row" : "column"}
       >
+        <Button variant="contained">InReview</Button>
         <Button variant="contained">Payed Leave</Button>
         <Button variant="contained">unPayed Leave</Button>
         <Button variant="contained">Maternity Leave</Button>

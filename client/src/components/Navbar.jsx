@@ -23,7 +23,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-const Navbar = ({ user,isSidebarOpen, setIsSidebarOpen }) => {
+const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -42,22 +42,9 @@ const Navbar = ({ user,isSidebarOpen, setIsSidebarOpen }) => {
     >
       <Toolbar sx={{ justifyContent: "space-between" }}>
         {/* LEFT SIDE */}
-        <FlexBetween>
-          <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-            <MenuIcon />
-          </IconButton>
-          <FlexBetween
-            backgroundColor={theme.palette.background.alt}
-            borderRadius="9px"
-            gap="3rem"
-            p="0.1rem 1.5rem"
-          >
-            <InputBase placeholder="Search..." />
-            <IconButton>
-              <Search />
-            </IconButton>
-          </FlexBetween>
-        </FlexBetween>
+        <IconButton onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+          <MenuIcon />
+        </IconButton>
 
         {/* RIGHT SIDE */}
         <FlexBetween gap="1.5rem">
@@ -114,7 +101,8 @@ const Navbar = ({ user,isSidebarOpen, setIsSidebarOpen }) => {
                     {user.role === undefined ? "" : user.role}
                   </Typography>
                 </Box>
-                <LogoutOutlined onClick={() => dispatch(setLogout())}
+                <LogoutOutlined
+                  onClick={() => dispatch(setLogout())}
                   sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
                 />
               </Box>
