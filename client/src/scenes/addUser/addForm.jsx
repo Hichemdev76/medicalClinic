@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import {
   Box,
   Button,
@@ -19,7 +19,7 @@ import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
+import { useState } from "react";
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
@@ -52,13 +52,12 @@ const initialValuesRegister = {
 };
 
 const Form = () => {
-  const [pageType, setPageType] = useState("register");
   const { palette } = useTheme();
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [valueDate, setDateValue] = useState(new Date().toLocaleDateString());
-  const isRegister = pageType === "register";
-  
+  const [selectedDate, setSelectedDate] = useState("");
+  const isRegister = "register";
+
   const register = async (values, onSubmitProps) => {
     console.log(values);
     const formData = new FormData();
@@ -75,7 +74,7 @@ const Form = () => {
       }
     );
     const savedUser = await savedUserResponse.json();
-    console.log(savedUser)
+    console.log(savedUser);
     onSubmitProps.resetForm();
     navigate("/users/all");
   };
@@ -131,16 +130,19 @@ const Form = () => {
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DesktopDatePicker
+                id="dateOfBirth"
+                name="dateOfBirth"
                 label="Date of Birth"
-                inputFormat="MM/DD/YYYY"
-                value={values.dateOfBirth}
+                inputFormat="DD/MM/YYYY"
+                value={selectedDate}
                 onChange={(newValue) => {
-                  console.log(newValue.$d.toLocaleDateString());
-                  setFieldValue(
-                    "dateOfBirth",
-                    newValue.$d.toLocaleDateString()
-                  );
-                  setDateValue(newValue);
+                  if (Boolean(newValue)) {
+                    setSelectedDate(newValue);
+                    setFieldValue(
+                      "startingDate",
+                      newValue.$d.toLocaleDateString()
+                    );
+                  }
                 }}
                 renderInput={(params) => <TextField {...params} />}
               />
@@ -187,7 +189,7 @@ const Form = () => {
                 <MenuItem value={"Nursing"}>Nursing</MenuItem>
               </Select>
             </FormControl>
-            
+
             <TextField
               label="Job Title"
               onBlur={handleBlur}
@@ -294,7 +296,6 @@ const Form = () => {
             >
               {"REGISTER"}
             </Button>
-            
           </Box>
         </form>
       )}

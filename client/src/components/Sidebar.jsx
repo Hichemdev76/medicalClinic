@@ -24,6 +24,8 @@ import {
   AddCircleOutlineOutlined,
   UpdateOutlined,
   PeopleOutlineOutlined,
+  PublicOutlined,
+  Groups2Outlined,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -43,47 +45,21 @@ const navItems = [
     text: "Add ",
     icon: <AddCircleOutlineOutlined />,
   },
-  {
-    text: "Update ",
-    icon: <UpdateOutlined />,
-  },
+
   {
     text: "Users",
     icon: <PeopleOutlineOutlined />,
   },
-  // {
-  //   text: "Customers",
-  //   icon: <Groups2Outlined />,
-  // },
-  // {
-  //   text: "Transactions",
-  //   icon: <ReceiptLongOutlined />,
-  // },
-  // {
-  //   text: "Geography",
-  //   icon: <PublicOutlined />,
-  // },
+
   {
     text: "Services",
     icon: null,
   },
   {
-    text: "Service 1",
-    icon: <PointOfSaleOutlined />,
+    text: "Service",
+    icon: <Groups2Outlined />,
   },
 
-  {
-    text: "Add Service",
-    icon: <AddCircleOutlineOutlined />,
-  },
-  // {
-  //   text: "Monthly",
-  //   icon: <CalendarMonthOutlined />,
-  // },
-  // {
-  //   text: "Breakdown",
-  //   icon: <PieChartOutlined />,
-  // },
   {
     text: "Archive",
     icon: null,
@@ -96,10 +72,6 @@ const navItems = [
     text: "Archives",
     icon: <AdminPanelSettingsOutlined />,
   },
-  // {
-  //   text: "",
-  //   icon: <TrendingUpOutlined />,
-  // },
 ];
 
 const Sidebar = ({
@@ -165,7 +137,7 @@ const Sidebar = ({
                   <ListItem key={text} disablePadding>
                     <ListItemButton
                       onClick={() => {
-                        navigate(`/${text}`);
+                        navigate(`/${text.split(" ").join("")}`);
                         setActive(lcText);
                       }}
                       sx={{

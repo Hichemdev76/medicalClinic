@@ -11,7 +11,10 @@ import LoginPage from "scenes/login";
 import AddUser from "scenes/addUser";
 import User from "scenes/userProfile";
 import Archives from "scenes/archives";
-import Leave from "scenes/Leave";
+import Leave from "scenes/leave";
+import AddService from "scenes/addService";
+import Service from "scenes/service";
+import OneLeave from "scenes/oneLeave";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -62,6 +65,10 @@ function App() {
                 element={isAuth ? <Leave /> : <Navigate to="/login" replace />}
               />
               <Route
+                path="/congé/:leaveId"
+                element={isAuth ? <OneLeave /> : <Navigate to="/login" replace />}
+              />
+              <Route
                 path="/profile/:userId"
                 element={isAuth ? <User /> : <Navigate to="/login" replace />}
               />
@@ -71,21 +78,13 @@ function App() {
                   isAuth ? <AddUser /> : <Navigate to="/login" replace />
                 }
               />
+              <Route
+                path="/Service"
+                element={
+                  isAuth ? <Service /> : <Navigate to="/login" replace />
+                }
+              />
             </Route>
-            {/* <Route element={<Layout />}>
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/users" element={<Users />} /> */}
-            {/* <Route path="/products" element={<Products />} />
-              <Route path="/customers" element={<Customers />} />
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/overview" element={<Overview />} />
-              <Route path="/daily" element={<Daily />} />
-              <Route path="/monthly" element={<Monthly />} />
-              <Route path="/breakdown" element={<Breakdown />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/performance" element={<Performance />} /> */}
-            {/* </Route> */}
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

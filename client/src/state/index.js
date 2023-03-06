@@ -19,10 +19,10 @@ export const globalSlice = createSlice({
       state.user = null;
       state.token = null;
     },
-    setUsers: (state, action) => {
-      state.users = action.payload.users;
+    updateUser: (state, action) => {
+      state.user = action.payload.user;
     },
   },
 });
-export const { setMode, setLogin, setLogout } = globalSlice.actions;
+export const { setMode, setLogin, setLogout, updateUser } = globalSlice.actions;
 export default globalSlice.reducer;

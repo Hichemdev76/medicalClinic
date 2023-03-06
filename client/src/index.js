@@ -23,11 +23,6 @@ import { PersistGate } from "redux-persist/integration/react";
 const persistConfig = { key: "root", storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, globalReducer);
 const store = configureStore({
-  // reducer: {
-  //   global: globalReducer,
-  //   [api.reducerPath]: api.reducer,
-  // },
-  // middleware: (getDefault) => getDefault().concat(api.middleware),
   reducer: { global: persistedReducer, [api.reducerPath]: api.reducer },
 
   middleware: (getDefaultMiddleware) =>

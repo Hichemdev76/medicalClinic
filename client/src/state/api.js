@@ -14,21 +14,96 @@ export const api = createApi({
     },
   }),
   reducerPath: "adminApi",
-  tagTypes: ["User", "Users", "ArchivedUsers"],
+  tagTypes: ["User", "Users", "ArchivedUsers", "Service", "Services", "Leave"],
   endpoints: (build) => ({
     getUser: build.query({
       query: (id) => `users/${id}`,
       providesTags: ["User"],
     }),
+    getAllUsers: build.query({
+      query: () => `users/`,
+      providesTags: ["Users"],
+    }),
     getUsers: build.query({
-      query: () => "users/all",
+      query: ({ page, pageSize, sort, search }) => ({
+        url: "users/all",
+        method: "GET",
+        params: { page, pageSize, sort, search },
+      }),
       providesTags: ["Users"],
     }),
     getArchivedUsers: build.query({
       query: () => "users/archives",
       providesTags: ["ArchivedUsers"],
     }),
+    updateUserRole: build.mutation({
+      query: ({ updates, id }) => ({
+        url: `/users/${id}`,
+        method: "PATCH",
+        body: updates,
+      }),
+      invalidatesTags: ["User","ArchivedUsers"],
+    }),
+    getService: build.query({
+      query: (name) => ({
+        url: `/services/${name}`,
+        method: "GET",
+      }),
+      providesTags: ["Service"],
+    }),
+    getAllService: build.query({
+      query: () => `/services`,
+      providesTags: ["Services"],
+    }),
+    addService: build.mutation({
+      query: (body) => ({
+        url: "/services",
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Service", "Services", "Users"],
+    }),
+    addLeave: build.mutation({
+      query: (body) => ({
+        url: "/leaves",
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Leaves"],
+    }),
+    updateLeave: build.mutation({
+      query: ({ id, updateBody }) => ({
+        url: `/leaves/${id}`,
+        method: "PATCH",
+        body: updateBody,
+      }),
+      invalidatesTags: ["Leaves", "Leave", "User"],
+    }),
+    getAllLeaves: build.query({
+      query: () => "/leaves",
+      providesTags: ["Leaves"],
+    }),
+    getLeave: build.query({
+      query: (id) => ({
+        url: `/Leaves/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["Leave"],
+    }),
   }),
 });
 
-export const { useGetUserQuery, useGetUsersQuery, useGetArchivedUsersQuery } = api;
+export const {
+  useGetUserQuery,
+  useGetUsersQuery,
+  useGetAllUsersQuery,
+  useUpdateUserRoleMutation,
+  useGetArchivedUsersQuery,
+  useAddServiceMutation,
+  useGetAllServiceQuery,
+  useGetServiceQuery,
+  useAddLeaveMutation,
+  useGetAllLeavesQuery,
+  useGetLeaveQuery,
+  useUpdateLeaveMutation,
+} = api;

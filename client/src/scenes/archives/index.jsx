@@ -9,7 +9,6 @@ const Archives = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { data, isLoading } = useGetArchivedUsersQuery();
-  console.log(data);
   const columns = [
     {
       field: "_id",

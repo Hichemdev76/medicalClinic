@@ -1,6 +1,6 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useGetUserQuery } from "state/api";
+import { useParams } from "react-router-dom";
+import { useGetUserQuery, useUpdateUserRoleMutation } from "state/api";
 import Header from "components/Header";
 import {
   Box,
@@ -10,17 +10,21 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setLogin } from "state";
 
 const Profile = () => {
-  const { userId } = useParams();
-  const token = useSelector((state) => state.global.token);
   const theme = useTheme();
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { data } = useGetUserQuery(userId);
-  const user = data || undefined;
-  console.log(user);
+
+  const { userId } = useParams();
+  const { user: loggedUser, token } = useSelector((state) => state.global);
+  const { data, isSuccess } = useGetUserQuery(userId);
+  const [updateUser] = useUpdateUserRoleMutation();
+
+  let user = undefined;
+  if (isSuccess) user = data;
 
   const capitalize = (str) => {
     return str[0].toUpperCase() + str.slice(1);
@@ -30,37 +34,32 @@ const Profile = () => {
     let newDate = new Date(Date.parse(date));
     return newDate.toDateString();
   };
-  const handleDelete = async () => {
-    let response = await fetch(
-      `${process.env.REACT_APP_BASE_URL}/users/archive/${userId}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
-    navigate("/archives");
-    console.log(data);
-  };
-  const promote = async () => {
-    let role = user.role === "user" ? "admin" : "user";
-    let response = await fetch(
-      `${process.env.REACT_APP_BASE_URL}/users/promote/${userId}`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ role: role }),
-      }
-    );
-    const data = await response.json();
-    navigate("/users");
-    console.log(data);
+
+  // const handleDelete = async () => {
+  //   let response = await fetch(
+  //     `${process.env.REACT_APP_BASE_URL}/users/archive/${userId}`,
+  //     {
+  //       method: "PATCH",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
+  //   const data = await response.json();
+  //   navigate("/archives");
+  //   console.log(data);
+  // };
+
+  const update = async () => {
+    let res = await updateUser({ updates: { role: "user" }, id: userId });
+    if (userId === loggedUser._id)
+      dispatch(
+        setLogin({
+          user: res.data,
+          token: token,
+        })
+      );
   };
 
   return (
@@ -100,7 +99,12 @@ const Profile = () => {
             {user !== undefined && !user.isArchived ? (
               <Stack spacing={2} width="160px" direction="column">
                 <Button
-                  onClick={promote}
+                  onClick={
+                    // updateUser({ updates: { role: "user" }, id: userId })
+                    async () => {
+                      update();
+                    }
+                  }
                   variant="outlined"
                   sx={{ color: theme.palette.secondary[300] }}
                 >
@@ -110,7 +114,9 @@ const Profile = () => {
                   Update
                 </Button>
                 <Button
-                  onClick={handleDelete}
+                  onClick={() => {
+                    updateUser({ updates: { isArchived: true }, id: userId });
+                  }}
                   variant="contained"
                   color="error"
                 >

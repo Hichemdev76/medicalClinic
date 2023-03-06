@@ -15,7 +15,6 @@ const Login = () => {
         height="40%"
         width="60%"
         p="4rem"
-        //borderRadius="50%"
         sx={{ objectFit: "cover" }}
       />:""}
       

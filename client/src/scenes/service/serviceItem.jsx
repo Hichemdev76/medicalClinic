@@ -1,30 +1,14 @@
-import React, { useState } from "react";
 import { Box, useTheme } from "@mui/material";
-import { useGetUsersQuery } from "state/api";
-import Header from "components/Header";
 import { DataGrid } from "@mui/x-data-grid";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import DataGridCustomToolbar from "components/CustomToolbar";
+import { useGetServiceQuery } from "state/api";
 
-const Users = () => {
+const ServiceItem = ({ name }) => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const { data: service, isSuccess, isLoading } = useGetServiceQuery(name);
 
-  // values to send for the backend
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(20);
-  const [sort, setSort] = useState({});
-  const [search, setSearch] = useState("");
-  const [searchInput, setSearchInput] = useState("");
-
-  const { data, isLoading, isSuccess } = useGetUsersQuery({
-    page,
-    pageSize,
-    sort: JSON.stringify(sort),
-    search,
-  });
-
-  if (isSuccess) console.log(data.users);
   const columns = [
     {
       field: "_id",
@@ -63,12 +47,12 @@ const Users = () => {
     },
   ];
 
-  return (
-    <Box m="1.5rem 2.5rem">
-      <Header title="Users" subtitle="List of All users" />
+  let content;
+  if (isSuccess) {
+    content = (
       <Box
         mt="40px"
-        height="70vh"
+        height="60vh"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
@@ -95,29 +79,16 @@ const Users = () => {
         }}
       >
         <DataGrid
-          loading={isLoading || !data}
+          loading={isLoading || !service.allUsers}
           getRowId={(row) => row._id}
-          rows={(data && data.users) || []}
+          rows={service.allUsers || []}
           columns={columns}
           onCellClick={(data) => navigate(`/profile/${data.id}`)}
-          rowCount={(data && data.users.length) || 0}
-          rowsPerPageOptions={[20, 50, 100]}
-          pagination
-          page={page}
-          pageSize={pageSize}
-          paginationMode="server"
-          sortingMode="server"
-          onPageChange={(newPage) => setPage(newPage)}
-          onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-          onSortModelChange={(newSortModel) => setSort(...newSortModel)}
-          components={{ Toolbar: DataGridCustomToolbar }}
-          componentsProps={{
-            toolbar: { searchInput, setSearchInput, setSearch },
-          }}
         />
       </Box>
-    </Box>
-  );
+    );
+  } else content = <div>{name}</div>;
+  return <div>{content}</div>;
 };
 
-export default Users;
+export default ServiceItem;
