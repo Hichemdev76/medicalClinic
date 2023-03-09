@@ -5,7 +5,9 @@ export const getService = async (req, res) => {
   try {
     const { name } = req.params;
     const service = await Service.findOne({ name: name });
-    const head = await User.findById(service.head).select("-password");
+
+    let head = await User.findById(service.head).select("-password");
+
     const allUsers = await User.find({
       _id: { $in: service.workersIds },
     }).select("-password");
@@ -27,8 +29,9 @@ export const getAllServices = async (req, res) => {
 export const addService = async (req, res) => {
   try {
     const { name, email } = req.body;
-    
-    const userToUpdate = await User.findOne({ email: email });
+
+    const userToUpdate = await User.findOne({ email: email.toLowerCase() });
+    console.log(userToUpdate);
     if (userToUpdate.role !== "user")
       return res
         .status(400)
@@ -51,7 +54,6 @@ export const addService = async (req, res) => {
       name,
       head: user._id,
       workersIds: usersIds,
-      nbrOfWorkers: usersIds.length,
     });
 
     const savedService = await newService.save();

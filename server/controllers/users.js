@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+import Service from "../models/Service.js";
 import User from "../models/User.js";
 
 /* READ*/
@@ -42,11 +44,12 @@ export const getUsers = async (req, res) => {
       isArchived: false,
       name: { $regex: search, $options: "i" },
     });
-    res.status(200).json({users, total});
+    res.status(200).json({ users, total });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
 };
+
 export const getUsersArchived = async (req, res) => {
   try {
     const users = await User.find({ isArchived: true }).select("-password");
@@ -69,10 +72,23 @@ export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const newUpdates = req.body;
-    await User.findByIdAndUpdate(id, newUpdates);
     const user = await User.findById(id).select("-password");
-    console.log("server", user);
-    res.status(200).json(user);
+    if (newUpdates.isArchived && user.affiliation !== "") {
+      await Service.findOneAndUpdate(
+        { name: user.affiliation },
+        {
+          $pull: { workersIds: user._id },
+        }
+      );
+      await User.findByIdAndUpdate(id, {
+        affiliation: "",
+        role: "user",
+        isArchived: true,
+      });
+    } else {
+      await User.findByIdAndUpdate(id, newUpdates);
+    }
+    res.status(200).json({ done: true });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }

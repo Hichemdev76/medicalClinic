@@ -1,6 +1,6 @@
 import React from "react";
-import { useParams } from "react-router-dom";
-import { useGetUserQuery, useUpdateUserRoleMutation } from "state/api";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetUserQuery, useUpdateUserMutation } from "state/api";
 import Header from "components/Header";
 import {
   Box,
@@ -17,11 +17,12 @@ const Profile = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const navigate = useNavigate();
 
   const { userId } = useParams();
   const { user: loggedUser, token } = useSelector((state) => state.global);
   const { data, isSuccess } = useGetUserQuery(userId);
-  const [updateUser] = useUpdateUserRoleMutation();
+  const [updateUser] = useUpdateUserMutation();
 
   let user = undefined;
   if (isSuccess) user = data;
@@ -35,24 +36,9 @@ const Profile = () => {
     return newDate.toDateString();
   };
 
-  // const handleDelete = async () => {
-  //   let response = await fetch(
-  //     `${process.env.REACT_APP_BASE_URL}/users/archive/${userId}`,
-  //     {
-  //       method: "PATCH",
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
-  //   const data = await response.json();
-  //   navigate("/archives");
-  //   console.log(data);
-  // };
-
-  const update = async () => {
-    let res = await updateUser({ updates: { role: "user" }, id: userId });
+ 
+  const update = async (updates) => {
+    let res = await updateUser({ updates: updates, id: userId });
     if (userId === loggedUser._id)
       dispatch(
         setLogin({
@@ -78,16 +64,14 @@ const Profile = () => {
           justifyContent={isNonMobile ? "none" : "space-between"}
           flexDirection={isNonMobile ? "column" : "row"}
         >
+          {/* //TODO: fix profile pic to a default one
+           */}
           <Box
             component="img"
             alt="profile"
             src={
               user !== undefined
-                ? `${
-                    process.env.REACT_APP_BASE_URL +
-                    "/assets/" +
-                    user.picturePath
-                  }`
+                ? `${process.env.REACT_APP_BASE_URL + "/assets/profile.jpg"}`
                 : ""
             }
             height="120px"
@@ -98,30 +82,39 @@ const Profile = () => {
           <>
             {user !== undefined && !user.isArchived ? (
               <Stack spacing={2} width="160px" direction="column">
-                <Button
-                  onClick={
-                    // updateUser({ updates: { role: "user" }, id: userId })
-                    async () => {
-                      update();
-                    }
-                  }
-                  variant="outlined"
-                  sx={{ color: theme.palette.secondary[300] }}
-                >
-                  Promote To Admin
-                </Button>
-                <Button variant="outlined" sx={{ color: "white" }}>
-                  Update
-                </Button>
-                <Button
-                  onClick={() => {
-                    updateUser({ updates: { isArchived: true }, id: userId });
-                  }}
-                  variant="contained"
-                  color="error"
-                >
-                  Delete
-                </Button>
+                {loggedUser.role === "admin" &&
+                  user.isArchived === false &&
+                  user.role === "user" && (
+                    <Button
+                      onClick={async () => {
+                        update({ role: "admin" });
+                      }}
+                      variant="outlined"
+                      sx={{ color: theme.palette.secondary[300] }}
+                    >
+                      Promote To Admin
+                    </Button>
+                  )}
+                {(loggedUser.role === "admin" || loggedUser._id === userId) && (
+                  <Button
+                    onClick={() => navigate(`/profile/update/${userId}`)}
+                    variant="outlined"
+                    sx={{ color: "white" }}
+                  >
+                    Update
+                  </Button>
+                )}
+                {loggedUser.role === "admin" && (
+                  <Button
+                    onClick={() => {
+                      update({ isArchived: true });
+                    }}
+                    variant="contained"
+                    color="error"
+                  >
+                    Delete
+                  </Button>
+                )}
               </Stack>
             ) : (
               ""
@@ -181,11 +174,15 @@ const Profile = () => {
             <Typography variant="h5">
               {`Level : ${user !== undefined ? user.level : ""}`}
             </Typography>
-            <Typography variant="h5">
-              {`Affiliation : ${
-                user !== undefined ? capitalize(user.affiliation) : ""
-              }`}
-            </Typography>
+            {user !== undefined && (
+              <Typography variant="h5">
+                {`Affiliation : ${
+                  user.affiliation !== ""
+                    ? capitalize(user.affiliation)
+                    : "User not affiliated to a service yet"
+                }`}
+              </Typography>
+            )}
             <Typography variant="h5">
               {`Enrollment Day : ${
                 user !== undefined ? dateReFormat(user.createdAt) : ""

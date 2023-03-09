@@ -16,6 +16,14 @@ export const api = createApi({
   reducerPath: "adminApi",
   tagTypes: ["User", "Users", "ArchivedUsers", "Service", "Services", "Leave"],
   endpoints: (build) => ({
+    addUser: build.mutation({
+      query: (body) => ({
+        url: "/addUser",
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["Users"],
+    }),
     getUser: build.query({
       query: (id) => `users/${id}`,
       providesTags: ["User"],
@@ -36,13 +44,13 @@ export const api = createApi({
       query: () => "users/archives",
       providesTags: ["ArchivedUsers"],
     }),
-    updateUserRole: build.mutation({
+    updateUser: build.mutation({
       query: ({ updates, id }) => ({
         url: `/users/${id}`,
         method: "PATCH",
         body: updates,
       }),
-      invalidatesTags: ["User","ArchivedUsers"],
+      invalidatesTags: ["User", "ArchivedUsers", "Service","Users"],
     }),
     getService: build.query({
       query: (name) => ({
@@ -97,7 +105,7 @@ export const {
   useGetUserQuery,
   useGetUsersQuery,
   useGetAllUsersQuery,
-  useUpdateUserRoleMutation,
+  useUpdateUserMutation,
   useGetArchivedUsersQuery,
   useAddServiceMutation,
   useGetAllServiceQuery,
@@ -106,4 +114,5 @@ export const {
   useGetAllLeavesQuery,
   useGetLeaveQuery,
   useUpdateLeaveMutation,
+  useAddUserMutation,
 } = api;

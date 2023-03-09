@@ -20,6 +20,7 @@ import FlexBetween from "components/FlexBetween";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
+import { useAddUserMutation, useGetAllServiceQuery } from "state/api";
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
@@ -30,8 +31,8 @@ const registerSchema = yup.object().shape({
   status: yup.string().required("required"),
   level: yup.number().required("required"),
   jobTitle: yup.string().required("required"),
-  affiliation: yup.string().required("required"),
-  picture: yup.string().required("required"),
+  affiliation: yup.string(),
+  picturePath: yup.string(),
   email: yup.string().email("invalid email").required("required"),
   password: yup.string().required("required"),
 });
@@ -46,41 +47,40 @@ const initialValuesRegister = {
   level: "",
   jobTitle: "",
   affiliation: "",
-  picture: "",
+  picturePath: "",
   email: "",
   password: "",
 };
 
-const Form = () => {
+const AddUserForm = () => {
   const { palette } = useTheme();
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [selectedDate, setSelectedDate] = useState("");
-  const isRegister = "register";
 
-  const register = async (values, onSubmitProps) => {
-    console.log(values);
-    const formData = new FormData();
-    for (let value in values) {
-      formData.append(value, values[value]);
-    }
-    formData.append("picturePath", values.picture.name);
+  const { data: services, isSuccess } = useGetAllServiceQuery();
+  const [addUser] = useAddUserMutation();
 
-    const savedUserResponse = await fetch(
-      `${process.env.REACT_APP_BASE_URL}/addUser`,
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
-    const savedUser = await savedUserResponse.json();
-    console.log(savedUser);
-    onSubmitProps.resetForm();
-    navigate("/users/all");
-  };
+  let checker = false;
+  let content;
+  if (isSuccess && services.length > 0) {
+    let servicesList = services.map((s) => s.name);
+    content = servicesList.map((service, index) => (
+      <MenuItem key={index} value={service}>
+        {service}
+      </MenuItem>
+    ));
+    checker = true;
+  }
 
+  
   const handleFormSubmit = async (values, onSubmitProps) => {
-    if (isRegister) await register(values, onSubmitProps);
+    let res = await addUser(values);
+    console.log(res)
+    if (res.data.done) {
+      onSubmitProps.resetForm();
+      navigate("/users");
+    }
   };
 
   return (
@@ -139,7 +139,7 @@ const Form = () => {
                   if (Boolean(newValue)) {
                     setSelectedDate(newValue);
                     setFieldValue(
-                      "startingDate",
+                      "dateOfBirth",
                       newValue.$d.toLocaleDateString()
                     );
                   }
@@ -172,23 +172,24 @@ const Form = () => {
               helperText={touched.status && errors.status}
               sx={{ gridColumn: "span 2" }}
             />
-            <FormControl sx={{ gridColumn: "span 2" }}>
-              <InputLabel>Affiliation</InputLabel>
-              <Select
-                label="Affiliation"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.affiliation}
-                name="affiliation"
-                error={
-                  Boolean(touched.affiliation) && Boolean(errors.affiliation)
-                }
-              >
-                <MenuItem value={"Administration"}>Administration</MenuItem>
-                <MenuItem value={"Medicine"}>Medicine</MenuItem>
-                <MenuItem value={"Nursing"}>Nursing</MenuItem>
-              </Select>
-            </FormControl>
+            {checker && (
+              <FormControl sx={{ gridColumn: "span 2" }}>
+                <InputLabel>Affiliation</InputLabel>
+                <Select
+                  label="Affiliation"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.affiliation}
+                  name="affiliation"
+                  error={
+                    Boolean(touched.affiliation) && Boolean(errors.affiliation)
+                  }
+                >
+                  {content}
+                  
+                </Select>
+              </FormControl>
+            )}
 
             <TextField
               label="Job Title"
@@ -220,7 +221,7 @@ const Form = () => {
               helperText={touched.address && errors.address}
               sx={{ gridColumn: "span 4" }}
             />
-            <Box
+            {/* <Box
               gridColumn="span 4"
               border={`1px solid ${palette.neutral.medium}`}
               borderRadius="5px"
@@ -252,7 +253,7 @@ const Form = () => {
                   </Box>
                 )}
               </Dropzone>
-            </Box>
+            </Box> */}
             <TextField
               label="Email"
               onBlur={handleBlur}
@@ -303,4 +304,4 @@ const Form = () => {
   );
 };
 
-export default Form;
+export default AddUserForm;

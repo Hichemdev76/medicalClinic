@@ -41,7 +41,6 @@ const UserSchema = new mongoose.Schema(
     },
     affiliation: {
       type: String,
-      required: true,
     },
     email: {
       type: String,

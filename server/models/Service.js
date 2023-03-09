@@ -9,11 +9,6 @@ const ServiceSchema = new mongoose.Schema(
     },
     head: {
       type: String,
-      require: true,
-    },
-    nbrOfWorkers: {
-      type: Number,
-      default: 0,
     },
     workersIds: Array,
   },

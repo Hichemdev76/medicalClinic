@@ -57,29 +57,7 @@ export const getLeave = async (req, res) => {
     console.log(id);
     const leave = await Leave.findById(id);
     const user = await User.findById(leave.userId);
-    // const leave = await Leave.aggregate([
-    //   {
-    //     $match: { _id: ObjectId(id) },
-    //   },
-
-    //   // {
-    //   //   $lookup: {
-    //   //     from: "users",
-    //   //     localField: "userId",
-    //   //     foreignField: "_id",
-    //   //     as: "user",
-    //   //   },
-    //   // },
-    //   // {
-    //   //   $unwind: "$user",
-    //   // },
-    //   // {
-    //   //   $project: {
-    //   //     user: "$userDoc"
-    //   //   }
-    //   // }
-    // ]);
-
+   // TODO: get creator by leave.creatorId and add it to the response
     res.status(201).json({leave,user});
   } catch (err) {
     res.status(500).json({ error: err.message });

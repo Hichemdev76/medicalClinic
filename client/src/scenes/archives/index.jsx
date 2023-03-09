@@ -49,7 +49,7 @@ const Archives = () => {
 
   return (
     <Box m="1.5rem 2.5rem">
-      <Header title="Users" subtitle="List of All users" />
+      <Header title="Archived Users" subtitle="List of All archived users" />
       <Box
         mt="40px"
         height="70vh"

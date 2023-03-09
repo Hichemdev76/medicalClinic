@@ -15,11 +15,12 @@ import Leave from "scenes/leave";
 import AddService from "scenes/addService";
 import Service from "scenes/service";
 import OneLeave from "scenes/oneLeave";
+import UpdateProfile from "scenes/updateProfile";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  const token = useSelector((state) => state.global.token);
+  const { user, token } = useSelector((state) => state.global);
   const isAuth = Boolean(token);
   return (
     <div className="app">
@@ -57,31 +58,99 @@ function App() {
               <Route
                 path="/archives"
                 element={
-                  isAuth ? <Archives /> : <Navigate to="/login" replace />
+                  isAuth ? (
+                    user.role !== "user" ? (
+                      <Archives />
+                    ) : (
+                      <Navigate to="/" replace />
+                    )
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
                 }
               />
               <Route
                 path="/congé"
-                element={isAuth ? <Leave /> : <Navigate to="/login" replace />}
+                element={
+                  isAuth ? (
+                    user.role !== "user" ? (
+                      <Leave />
+                    ) : (
+                      <Navigate to="/" replace />
+                    )
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                }
               />
               <Route
                 path="/congé/:leaveId"
-                element={isAuth ? <OneLeave /> : <Navigate to="/login" replace />}
+                element={
+                  isAuth ? (
+                    user.role !== "user" ? (
+                      <OneLeave />
+                    ) : (
+                      <Navigate to="/" replace />
+                    )
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                }
               />
               <Route
                 path="/profile/:userId"
-                element={isAuth ? <User /> : <Navigate to="/login" replace />}
+                element={
+                  isAuth ? (
+                    user.role !== "user" ? (
+                      <User />
+                    ) : (
+                      <Navigate to="/" replace />
+                    )
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                }
+              />
+              <Route
+                path="/profile/update/:userId"
+                element={
+                  isAuth ? (
+                    user.role !== "user" ? (
+                      <UpdateProfile />
+                    ) : (
+                      <Navigate to="/" replace />
+                    )
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                }
               />
               <Route
                 path="/add"
                 element={
-                  isAuth ? <AddUser /> : <Navigate to="/login" replace />
+                  isAuth ? (
+                    user.role !== "user" ? (
+                      <AddUser />
+                    ) : (
+                      <Navigate to="/" replace />
+                    )
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
                 }
               />
               <Route
                 path="/Service"
                 element={
-                  isAuth ? <Service /> : <Navigate to="/login" replace />
+                  isAuth ? (
+                    user.role !== "user" ? (
+                      <Service />
+                    ) : (
+                      <Navigate to="/" replace />
+                    )
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
                 }
               />
             </Route>

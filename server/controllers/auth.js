@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Service from "../models/Service.js";
 import User from "../models/User.js";
 
 /* REGISTER USER */
@@ -22,7 +23,7 @@ export const register = async (req, res) => {
       isArchived,
       payedLeaveDaysLeft,
     } = req.body;
-
+    console.log(req.body);
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
     const newUser = new User({
@@ -36,14 +37,23 @@ export const register = async (req, res) => {
       sex,
       jobTitle,
       affiliation,
-      email,
+      email: email.toLowerCase(),
       password: passwordHash,
       picturePath,
       isArchived,
       payedLeaveDaysLeft,
     });
     const savedUser = await newUser.save();
-    res.status(201).json(savedUser);
+    console.log(newUser);
+    if (savedUser && affiliation !== "") {
+      await Service.findOneAndUpdate(
+        { name: affiliation },
+        {
+          $push: { workersIds: savedUser._id },
+        }
+      );
+    }
+    res.status(201).json({ savedUser, done: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
