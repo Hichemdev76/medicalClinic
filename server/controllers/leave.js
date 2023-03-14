@@ -34,9 +34,10 @@ export const leaveUpdate = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
-    console.log(id, status);
+
     const leave = await Leave.findById(id);
     const user = await User.findById(leave.userId);
+    
     if (status === "accepted" && leave.type === "paid") {
       let daysLeft = user.payedLeaveDaysLeft - leave.nbrOfDays;
       await User.findByIdAndUpdate(leave.userId, {

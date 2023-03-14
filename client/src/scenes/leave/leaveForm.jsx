@@ -69,8 +69,8 @@ const LeaveForm = ({ leaveType }) => {
   const creator = useSelector((state) => state.global.user);
   const [checkUser, setCheckUser] = useState(false);
   const [checkUserDays, setCheckUserDays] = useState(true);
-  const [getEmail, setGetEmail] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [getEmail, setGetEmail] = useState("");
   const [user, setUser] = useState({});
 
   const [addLeave] = useAddLeaveMutation();

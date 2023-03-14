@@ -26,6 +26,53 @@ export const getAllServices = async (req, res) => {
   }
 };
 
+export const updateService = async (req, res) => {
+  try {
+    const { name, email, role } = req.body;
+
+    if (role === "user") {
+      let updatedService = await Service.findOneAndUpdate(
+        { name: name },
+        {
+          $push: { workersIds: user._id },
+        }
+      );
+      await User.findOneAndUpdate(
+        { email: email.toLowerCase() },
+        { affiliation: name }
+      );
+      return res.status(200).json(updatedService);
+    }
+
+    const user = await User.findOne({ email: email });
+    if (!user) return res.status(404).json({ message: "No user found" });
+
+    const service = await Service.findOne({ name: name });
+    if (!service) return res.status(404).json({ message: "No service found" });
+
+    await User.findByIdAndUpdate(service.head, {
+      role: "user",
+    });
+
+    const newHead = await User.findOneAndUpdate(
+      { email: email.toLowerCase() },
+      { role: "serviceChef", affiliation: name }
+    );
+    if (!newHead) return res.status(404).json({ message: "No user found" });
+
+    const updatedService = await Service.findOneAndUpdate(
+      { name: name },
+      {
+        $set: { head: newHead._id },
+        $push: { workersIds: newHead._id },
+      }
+    );
+    res.status(200).json(updatedService);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+};
+
 export const addService = async (req, res) => {
   try {
     const { name, email } = req.body;

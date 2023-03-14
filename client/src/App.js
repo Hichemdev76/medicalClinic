@@ -12,10 +12,11 @@ import AddUser from "scenes/addUser";
 import User from "scenes/userProfile";
 import Archives from "scenes/archives";
 import Leave from "scenes/leave";
-import AddService from "scenes/addService";
 import Service from "scenes/service";
 import OneLeave from "scenes/oneLeave";
 import UpdateProfile from "scenes/updateProfile";
+import PdfViewer from "scenes/printFile";
+import SinglePage from "scenes/printFile";
 
 function App() {
   const mode = useSelector((state) => state.global.mode);
@@ -145,6 +146,34 @@ function App() {
                   isAuth ? (
                     user.role !== "user" ? (
                       <Service />
+                    ) : (
+                      <Navigate to="/" replace />
+                    )
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                }
+              />
+              <Route
+                path="/Installation"
+                element={
+                  isAuth ? (
+                    user.role === "admin" ? (
+                      <SinglePage pdf={process.env.REACT_APP_BASE_URL+'/assets/install.PDF'} />
+                    ) : (
+                      <Navigate to="/" replace />
+                    )
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                }
+              />
+              <Route
+                path="/guidance"
+                element={
+                  isAuth ? (
+                    user.role === "admin" ? (
+                      <SinglePage pdf={process.env.REACT_APP_BASE_URL+"/assets/guidance.PDF"} />
                     ) : (
                       <Navigate to="/" replace />
                     )

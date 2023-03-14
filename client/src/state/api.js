@@ -71,6 +71,14 @@ export const api = createApi({
       }),
       invalidatesTags: ["Service", "Services", "Users"],
     }),
+    updateService: build.mutation({
+      query: ( updateBody ) => ({
+        url: `/services/update`,
+        method: "PATCH",
+        body: updateBody,
+      }),
+      invalidatesTags: ["Services","Service", "User","Users"],
+    }),
     addLeave: build.mutation({
       query: (body) => ({
         url: "/leaves",
@@ -115,4 +123,5 @@ export const {
   useGetLeaveQuery,
   useUpdateLeaveMutation,
   useAddUserMutation,
+  useUpdateServiceMutation
 } = api;

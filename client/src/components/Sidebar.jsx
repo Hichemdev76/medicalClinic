@@ -26,6 +26,7 @@ import {
   PeopleOutlineOutlined,
   PublicOutlined,
   Groups2Outlined,
+  LocalPrintshopOutlined,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -71,6 +72,14 @@ const navItems = [
   {
     text: "Archives",
     icon: <AdminPanelSettingsOutlined />,
+  },
+  {
+    text: "Installation",
+    icon: <LocalPrintshopOutlined />,
+  },
+  {
+    text: "Guidance",
+    icon: <LocalPrintshopOutlined />,
   },
 ];
 
