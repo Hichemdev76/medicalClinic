@@ -75,6 +75,7 @@ const AddUserForm = () => {
 
   
   const handleFormSubmit = async (values, onSubmitProps) => {
+    console.log(values);
     let res = await addUser(values);
     console.log(res)
     if (res.data.done) {

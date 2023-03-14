@@ -13,7 +13,7 @@ import {
 import * as yup from "yup";
 
 const addLeaveSchema = yup.object().shape({
-  leaveCause: yup.string().required("required"),
+  leaveCause: yup.string(),
   startingDate: yup.string().required("required"),
   nbrOfDays: yup.number().required("required"),
   email: yup.string().email("invalid email").required("required"),
@@ -61,7 +61,7 @@ function addDays(date, days) {
   return newDate;
 }
 
-const checkLeaveDays = (days, user) => user.payedLeaveDaysLeft > days;
+const checkLeaveDays = (days, user) => user.payedLeaveDaysLeft >= days;
 
 const LeaveForm = ({ leaveType }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -87,6 +87,7 @@ const LeaveForm = ({ leaveType }) => {
   }, [getEmail]);
 
   const handleFormSubmit = async (values, onSubmitProps) => {
+
     if (leaveType === "maternal") values["leaveCause"] = "Maternity Leave";
     if (isSuccess) {
       values["id"] = user._id;
@@ -147,21 +148,21 @@ const LeaveForm = ({ leaveType }) => {
             <Box gridColumn="span 2">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
-                  id="statingDate"
-                  name="statingDate"
-                  inputFormat="DD/MM/YYYY"
-                  label="Starting Date"
-                  value={selectedDate}
-                  onChange={(newValue) => {
-                    if (Boolean(newValue)) {
-                      setSelectedDate(newValue);
-                      setFieldValue(
-                        "startingDate",
-                        newValue.$d.toLocaleDateString()
-                      );
-                    }
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
+                 id="startingDate"
+                name="startingDate"
+                label="Starting Date"
+                inputFormat="DD/MM/YYYY"
+                value={selectedDate}
+                onChange={(newValue) => {
+                  if (Boolean(newValue)) {
+                    setSelectedDate(newValue);
+                    setFieldValue(
+                      "startingDate",
+                      newValue.$d.toLocaleDateString()
+                    );
+                  }
+                }}
+                renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
             </Box>

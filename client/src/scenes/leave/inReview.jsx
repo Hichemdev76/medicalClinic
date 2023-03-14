@@ -35,7 +35,7 @@ const InReview = () => {
   let content;
   if (isSuccess) {
     content = leaves.map((leave, index) => {
-      if (leave.creatorId === creator._id)
+      if (leave.creatorId === creator._id || creator.role==="admin")
         if (leave.status === "accepted" || leave.status === "review")
           return (
             <Grid key={index} item xs={12} md={4}>

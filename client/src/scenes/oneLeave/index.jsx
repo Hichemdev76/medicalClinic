@@ -4,7 +4,7 @@ import Header from "components/Header";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { useGetLeaveQuery } from "state/api";
+import { useGetLeaveQuery, useUpdateLeaveMutation } from "state/api";
 
 const capitalize = (str) => {
   return str[0].toUpperCase() + str.slice(1);
@@ -17,6 +17,7 @@ const dateReFormat = (date) => {
 
 const OneLeave = () => {
   const theme = useTheme();
+  const [updateLeave] = useUpdateLeaveMutation();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const loggedUser = useSelector((state) => state.global.user);
   const { leaveId } = useParams();
@@ -59,19 +60,29 @@ const OneLeave = () => {
                 sx={{ objectFit: "cover" }}
               />
 
-              <Stack spacing={2} width="160px" direction="column">
+              {leave.status!=="refused"&&(<Stack spacing={2} width="160px" direction="column">
                 {loggedUser.role ===
                   "admin"&&(
-                    <Button variant="outlined" color="success">
-                      Update
+                    <Button variant="outlined" color="success" onClick={async () => {
+              await updateLeave({
+                id: leave._id,
+                updateBody: { status: "accepted" },
+              });
+            }}>
+                      Accept
                     </Button>
                   )}
-                {loggedUser._id === leave.creatorId && (
-                  <Button onClick={() => {}} variant="contained" color="error">
-                    Delete
+                {(loggedUser._id === leave.creatorId || loggedUser.role === "admin") && (
+                  <Button onClick={async () => {
+              await updateLeave({
+                id: leave._id,
+                updateBody: { status: "refused" },
+              });
+            }} variant="contained" color="error">
+                    Refuse
                   </Button>
                 )}
-              </Stack>
+              </Stack>)}
             </Box>
             <Box>
               <Header

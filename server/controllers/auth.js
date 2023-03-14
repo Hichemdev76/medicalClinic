@@ -23,9 +23,9 @@ export const register = async (req, res) => {
       isArchived,
       payedLeaveDaysLeft,
     } = req.body;
-    console.log(req.body);
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
+    let mail = email.toLowerCase()    
     const newUser = new User({
       role,
       firstName,
@@ -37,15 +37,15 @@ export const register = async (req, res) => {
       sex,
       jobTitle,
       affiliation,
-      email: email.toLowerCase(),
+      email: mail,
       password: passwordHash,
       picturePath,
       isArchived,
       payedLeaveDaysLeft,
     });
     const savedUser = await newUser.save();
-    console.log(newUser);
-    if (savedUser && affiliation !== "") {
+    console.log(savedUser)
+    if (savedUser && savedUser.affiliation !== "") {
       await Service.findOneAndUpdate(
         { name: affiliation },
         {
@@ -67,7 +67,7 @@ export const login = async (req, res) => {
     const user = await User.findOne({
       email: email,
     });
-    if (!user) return res.status(400).json({ msg: "User does not exist." });
+    if (!user|| user.isArchived|| user.role==="user") return res.status(400).json({ msg: "User does not exist." });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });

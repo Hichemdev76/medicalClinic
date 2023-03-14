@@ -29,8 +29,11 @@ export const getAllServices = async (req, res) => {
 export const updateService = async (req, res) => {
   try {
     const { name, email, role } = req.body;
+    const user = await User.findOne({ email: email });
+    if (!user) return res.status(404).json({ message: "No user found" });
 
     if (role === "user") {
+
       let updatedService = await Service.findOneAndUpdate(
         { name: name },
         {
@@ -44,8 +47,6 @@ export const updateService = async (req, res) => {
       return res.status(200).json(updatedService);
     }
 
-    const user = await User.findOne({ email: email });
-    if (!user) return res.status(404).json({ message: "No user found" });
 
     const service = await Service.findOne({ name: name });
     if (!service) return res.status(404).json({ message: "No service found" });
