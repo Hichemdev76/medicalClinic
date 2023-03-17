@@ -56,7 +56,10 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             )}
           </IconButton>
           <IconButton>
-            <SettingsOutlined sx={{ fontSize: "25px" }} />
+            <SettingsOutlined
+              onClick={() => navigate(`/profile/update/${user._id}`)}
+              sx={{ fontSize: "25px" }}
+            />
           </IconButton>
           <FlexBetween>
             <Button
@@ -71,7 +74,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
               <Box
                 component="img"
                 alt="profile"
-                src={profileImage}
+                src={`${process.env.REACT_APP_BASE_URL + "/assets/profil.png"}`}
                 height="32px"
                 width="32px"
                 borderRadius="50%"
@@ -84,7 +87,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 alignItems="center"
               >
                 <Box
-                  onClick={() => navigate("/profile")}
+                  onClick={() => navigate(`/profile/${user._id}`)}
                   sx={{ "&:hover": { cursor: "pointer" } }}
                 >
                   <Typography

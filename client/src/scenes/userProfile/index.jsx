@@ -36,7 +36,6 @@ const Profile = () => {
     return newDate.toDateString();
   };
 
- 
   const update = async (updates) => {
     let res = await updateUser({ updates: updates, id: userId });
     if (userId === loggedUser._id)
@@ -64,14 +63,12 @@ const Profile = () => {
           justifyContent={isNonMobile ? "none" : "space-between"}
           flexDirection={isNonMobile ? "column" : "row"}
         >
-          {/* //TODO: fix profile pic to a default one
-           */}
           <Box
             component="img"
             alt="profile"
             src={
               user !== undefined
-                ? `${process.env.REACT_APP_BASE_URL + "/assets/profile.jpg"}`
+                ? `${process.env.REACT_APP_BASE_URL + "/assets/profil.png"}`
                 : ""
             }
             height="120px"
@@ -80,10 +77,10 @@ const Profile = () => {
             sx={{ objectFit: "cover" }}
           />
           <>
-            {user !== undefined && !user.isArchived ? (
+            {user !== undefined ? (
               <Stack spacing={2} width="160px" direction="column">
                 {loggedUser.role === "admin" &&
-                  user.isArchived === false &&
+                  !user.isArchived &&
                   user.role === "user" && (
                     <Button
                       onClick={async () => {
@@ -95,26 +92,55 @@ const Profile = () => {
                       Promote To Admin
                     </Button>
                   )}
-                {(loggedUser.role === "admin" || loggedUser._id === userId) && (
-                  <Button
-                    onClick={() => navigate(`/profile/update/${userId}`)}
-                    variant="outlined"
-                    sx={{ color: "white" }}
-                  >
-                    Update
-                  </Button>
-                )}
-                {loggedUser.role === "admin" && (
-                  <Button
-                    onClick={() => {
-                      update({ isArchived: true });
-                    }}
-                    variant="contained"
-                    color="error"
-                  >
-                    Delete
-                  </Button>
-                )}
+                {loggedUser.role === "admin" &&
+                  !user.isArchived &&
+                  user.role === "admin" && (
+                    <Button
+                      onClick={async () => {
+                        update({ role: "user" });
+                      }}
+                      variant="outlined"
+                      sx={{ color: theme.palette.secondary[300] }}
+                    >
+                      Downgrade To User
+                    </Button>
+                  )}
+                {(loggedUser.role === "admin" || loggedUser._id === userId) &&
+                  !user.isArchived && (
+                    <Button
+                      onClick={() => navigate(`/profile/update/${userId}`)}
+                      variant="outlined"
+                      sx={{ color: "white" }}
+                    >
+                      Update
+                    </Button>
+                  )}
+                {loggedUser.role === "admin" &&
+                  !user.isArchived &&
+                  user.role === "user" && (
+                    <Button
+                      onClick={() => {
+                        update({ isArchived: true });
+                      }}
+                      variant="contained"
+                      color="error"
+                    >
+                      Delete
+                    </Button>
+                  )}
+                {loggedUser.role === "admin" &&
+                  user.isArchived &&
+                  user.role === "user" && (
+                    <Button
+                      onClick={() => {
+                        update({ isArchived: false });
+                      }}
+                      variant="contained"
+                      color="success"
+                    >
+                      Reinstate
+                    </Button>
+                  )}
               </Stack>
             ) : (
               ""

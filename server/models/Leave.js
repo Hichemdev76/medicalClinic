@@ -28,7 +28,7 @@ const LeaveSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["review", "accepted", "refused"],
+      enum: ["review", "accepted", "refused","canceled"],
       default: "review",
     },
     type: {

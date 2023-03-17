@@ -73,21 +73,26 @@ export const updateUser = async (req, res) => {
     const { id } = req.params;
     const newUpdates = req.body;
     const user = await User.findById(id).select("-password");
-    if (newUpdates.isArchived && user.affiliation !== "") {
+    if (
+      (newUpdates.isArchived || newUpdates.role === "admin") &&
+      user.affiliation !== ""
+    ) {
       await Service.findOneAndUpdate(
         { name: user.affiliation },
         {
           $pull: { workersIds: user._id },
         }
       );
+    }
+    if (newUpdates.isArchived) {
       await User.findByIdAndUpdate(id, {
         affiliation: "",
         role: "user",
         isArchived: true,
       });
-    } else {
-      await User.findByIdAndUpdate(id, newUpdates);
+      return res.status(200).json({ done: true });
     }
+    await User.findByIdAndUpdate(id, newUpdates);
     res.status(200).json({ done: true });
   } catch (err) {
     res.status(404).json({ message: err.message });

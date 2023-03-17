@@ -7,12 +7,13 @@ import multer from "multer";
 import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 import { register } from "./controllers/auth.js";
 import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import serviceRoutes from "./routes/services.js";
-import leaveRoutes from "./routes/leave.js"
+import leaveRoutes from "./routes/leave.js";
 
 /* CONFIGURATION */
 const __filename = fileURLToPath(import.meta.url);
@@ -44,6 +45,15 @@ const upload = multer({ storage });
 
 /* ROUTES WITH FILEs*/
 app.post("/addUser", upload.single("picture"), register);
+app.get("/download/:name", (req, res) => {
+  const { name } = req.params;
+  const file = path.join(__dirname, `/public/assets/${name}.PDF`);
+  const fileName = name + ".PDF";
+  const fileStream = fs.createReadStream(file);
+  res.setHeader("Content-Disposition", `attachment; filename=${fileName}`);
+  res.setHeader("Content-Type", "application/pdf");
+  fileStream.pipe(res);
+});
 
 /* ROUTES */
 app.use("/", authRoutes);

@@ -17,12 +17,14 @@ const Leave = () => {
   const theme = useTheme();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { user } = useSelector((state) => state.global);
+
   const leaveType = {
     inReview: { type: "review", title: "Requests in Review" },
     paidLeave: { type: "paid", title: "Paid Leave" },
     unPaidLeave: { type: "unpaid", title: "unPaid Leave" },
     maternityLeave: { type: "maternal", title: "Maternity Leave" },
   };
+  
   const [leaveT, setLeaveT] = useState(leaveType.inReview);
   return user.role !== "user" ? (
     <Box m="1.5rem 2.5rem">

@@ -1,4 +1,14 @@
-import { Box, Button, TextField, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Formik } from "formik";
@@ -15,7 +25,7 @@ import * as yup from "yup";
 const addLeaveSchema = yup.object().shape({
   leaveCause: yup.string(),
   startingDate: yup.string().required("required"),
-  nbrOfDays: yup.number().required("required"),
+  nbrOfDays: yup.number(),
   email: yup.string().email("invalid email").required("required"),
 });
 
@@ -79,16 +89,20 @@ const LeaveForm = ({ leaveType }) => {
   useEffect(() => {
     if (isSuccess) {
       let user = findUserByEmail(users, getEmail);
-      if (user) {
+      if (user && user.affiliation === creator.affiliation) {
         setCheckUser(true);
+        if (user.sex === "Male" && leaveType === "maternal")
+          setCheckUser(false);
         setUser(user);
       }
     }
   }, [getEmail]);
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-
-    if (leaveType === "maternal") values["leaveCause"] = "Maternity Leave";
+    if (leaveType === "maternal") {
+      values["nbrOfDays"] = 90;
+      values["leaveCause"] = "Maternity Leave";
+    }
     if (isSuccess) {
       values["id"] = user._id;
       values["creator"] = creator._id;
@@ -103,8 +117,6 @@ const LeaveForm = ({ leaveType }) => {
       onSubmitProps.resetForm();
     }
   };
-
-  
 
   return (
     <Formik
@@ -121,7 +133,7 @@ const LeaveForm = ({ leaveType }) => {
         setFieldValue,
         handleSubmit,
       }) => (
-        <form onSubmit={handleSubmit} >
+        <form onSubmit={handleSubmit}>
           <Box
             mt="30px"
             display="grid"
@@ -144,46 +156,69 @@ const LeaveForm = ({ leaveType }) => {
               helperText={touched.email && errors.email}
               sx={{ gridColumn: "span 2" }}
             />
-
             <Box gridColumn="span 2">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
-                 id="startingDate"
-                name="startingDate"
-                label="Starting Date"
-                inputFormat="DD/MM/YYYY"
-                value={selectedDate}
-                onChange={(newValue) => {
-                  if (Boolean(newValue)) {
-                    setSelectedDate(newValue);
-                    setFieldValue(
-                      "startingDate",
-                      newValue.$d.toLocaleDateString()
-                    );
-                  }
-                }}
-                renderInput={(params) => <TextField {...params} />}
+                  id="startingDate"
+                  name="startingDate"
+                  label="Starting Date"
+                  inputFormat="DD/MM/YYYY"
+                  value={selectedDate}
+                  onChange={(newValue) => {
+                    if (Boolean(newValue)) {
+                      setSelectedDate(newValue);
+                      setFieldValue(
+                        "startingDate",
+                        newValue.$d.toLocaleDateString()
+                      );
+                    }
+                  }}
+                  renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>
             </Box>
-            <TextField
-              label="Number Of Days"
-              onBlur={handleBlur}
-              onChange={(e) => {
-                setFieldValue("nbrOfDays", e.target.value);
-                console.log(user)
-                if (leaveType === "paid")
-                  setCheckUserDays(checkLeaveDays(e.target.value, user));
-                else if (user.sex === "Male" && leaveType === "maternal")
-                  setCheckUserDays(false);
-                else setCheckUserDays(true);
-              }}
-              value={values.nbrOfDays}
-              name="nbrOfDays"
-              error={Boolean(touched.nbrOfDays) && Boolean(errors.nbrOfDays)}
-              helperText={touched.nbrOfDays && errors.nbrOfDays}
-              sx={{ gridColumn: "span 2" }}
-            />
+            {leaveType === "paid" && (
+              <TextField
+                label="Number Of Days"
+                onBlur={handleBlur}
+                onChange={(e) => {
+                  setFieldValue("nbrOfDays", e.target.value);
+                  if (leaveType === "paid")
+                    setCheckUserDays(checkLeaveDays(e.target.value, user));
+                  else setCheckUserDays(true);
+                }}
+                value={values.nbrOfDays}
+                name="nbrOfDays"
+                error={Boolean(touched.nbrOfDays) && Boolean(errors.nbrOfDays)}
+                helperText={touched.nbrOfDays && errors.nbrOfDays}
+                sx={{ gridColumn: "span 2" }}
+              />
+            )}{" "}
+            {leaveType === "unpaid" && (
+              <FormControl sx={{ gridColumn: "span 2" }}>
+                <InputLabel>Number Of Days</InputLabel>
+                <Select
+                  label="Number Of Days"
+                  onBlur={handleBlur}
+                  onChange={(e) => {
+                    setFieldValue("nbrOfDays", e.target.value);
+                    if (leaveType === "paid")
+                      setCheckUserDays(checkLeaveDays(e.target.value, user));
+                    else if (user.sex === "Male" && leaveType === "maternal")
+                      setCheckUserDays(false);
+                    else setCheckUserDays(true);
+                  }}
+                  value={values.nbrOfDays}
+                  name="nbrOfDays"
+                  error={
+                    Boolean(touched.nbrOfDays) && Boolean(errors.nbrOfDays)
+                  }
+                >
+                  <MenuItem value={365}>1 Year</MenuItem>
+                  <MenuItem value={730}>2 Year</MenuItem>
+                </Select>
+              </FormControl>
+            )}
             <>
               {leaveType !== "maternal" ? (
                 <TextField

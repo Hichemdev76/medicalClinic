@@ -33,7 +33,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
 import profileImage from "assets/profile.jpg";
 
-const navItems = [
+const adminNavItems = [
   {
     text: "Dashboard",
     icon: <HomeOutlined />,
@@ -62,11 +62,11 @@ const navItems = [
   },
 
   {
-    text: "Archive",
+    text: "Functionality",
     icon: null,
   },
   {
-    text: "Congé",
+    text: "Leave",
     icon: <PieChartOutlined />,
   },
   {
@@ -80,6 +80,47 @@ const navItems = [
   {
     text: "Guidance",
     icon: <LocalPrintshopOutlined />,
+  },
+];
+
+const serviceChefNavItems = [
+  {
+    text: "Dashboard",
+    icon: <HomeOutlined />,
+  },
+  {
+    text: "User Management",
+    icon: null,
+  },
+  {
+    text: "Add ",
+    icon: <AddCircleOutlineOutlined />,
+  },
+
+  {
+    text: "Users",
+    icon: <PeopleOutlineOutlined />,
+  },
+  {
+    text: "Services",
+    icon: null,
+  },
+  {
+    text: "Service",
+    icon: <Groups2Outlined />,
+  },
+
+  {
+    text: "Functionality",
+    icon: null,
+  },
+  {
+    text: "Leave",
+    icon: <PieChartOutlined />,
+  },
+  {
+    text: "Archives",
+    icon: <AdminPanelSettingsOutlined />,
   },
 ];
 
@@ -97,7 +138,7 @@ const Sidebar = ({
   useEffect(() => {
     setActive(pathname.substring(1));
   }, [pathname]);
-
+  let content = user.role === "admin" ? adminNavItems : serviceChefNavItems;
   return (
     <Box component="nav">
       {isSidebarOpen && (
@@ -133,7 +174,7 @@ const Sidebar = ({
               </FlexBetween>
             </Box>
             <List>
-              {navItems.map(({ text, icon }) => {
+              {content.map(({ text, icon }) => {
                 if (!icon) {
                   return (
                     <Typography key={text} sx={{ m: "2.25rem 0 .5rem 3rem" }}>
@@ -182,9 +223,10 @@ const Sidebar = ({
             </List>
           </Box>
           <Box
-            // position="fixed"
-            marginTop="1.5rem"
-            // paddingBottom="1rem"
+            mt="auto"
+            mb="0"
+            ml="-20px"
+            paddingBottom="1rem"
             // backgroundColor={theme.palette.background.alt}
           >
             <Divider />
@@ -192,13 +234,16 @@ const Sidebar = ({
               <Box
                 component="img"
                 alt="profile"
-                src={profileImage}
+                src={`${process.env.REACT_APP_BASE_URL + "/assets/profil.png"}`}
                 height="40px"
                 width="40px"
                 borderRadius="50%"
                 sx={{ objectFit: "cover" }}
               />
-              <Box textAlign="left">
+              <Box
+                textAlign="left"
+                onClick={() => navigate(`/profile/${user._id}`)}
+              >
                 <Typography
                   fontWeight="bold"
                   fontSize="0.9rem"
@@ -212,7 +257,7 @@ const Sidebar = ({
                   fontSize="0.8rem"
                   sx={{ color: theme.palette.secondary[200] }}
                 >
-                  {user.role === undefined ? "" : user.role}
+                  {user.affiliation === undefined ? "" : user.affiliation}
                 </Typography>
               </Box>
               <SettingsOutlined
@@ -220,6 +265,7 @@ const Sidebar = ({
                   color: theme.palette.secondary[300],
                   fontSize: "25px ",
                 }}
+                onClick={() => navigate(`/profile/update/${user._id}`)}
               />
             </FlexBetween>
           </Box>

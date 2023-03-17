@@ -35,7 +35,7 @@ const InReview = () => {
   let content;
   if (isSuccess) {
     content = leaves.map((leave, index) => {
-      if (leave.creatorId === creator._id || creator.role==="admin")
+      if (leave.creatorId === creator._id || creator.role === "admin")
         if (leave.status === "accepted" || leave.status === "review")
           return (
             <Grid key={index} item xs={12} md={4}>
@@ -85,22 +85,45 @@ const LeaveCard = ({ leave, theme }) => {
         direction={"row"}
         width="100%"
       >
+        {user.role === "admin" && leave.status === "review" && (
+          <Button
+            onClick={async () => {
+              await updateLeave({
+                id: leave._id,
+                updateBody: { status: "refused" },
+              });
+            }}
+            color="error"
+            variant="contained"
+          >
+            <DeleteOutlineOutlined />
+          </Button>
+        )}
+        {user.role === "serviceChef" &&
+          user._id === leave.creatorId &&
+          leave.status === "review" && (
+            <Button
+              onClick={async () => {
+                await updateLeave({
+                  id: leave._id,
+                  updateBody: { status: "canceled" },
+                });
+              }}
+              color="error"
+              variant="contained"
+            >
+              <DeleteOutlineOutlined />
+            </Button>
+          )}
         <Button
-          onClick={async () => {
-            await updateLeave({
-              id: leave._id,
-              updateBody: { status: "refused" },
-            });
+          onClick={() => {
+            navigate(`/Leave/${leave._id}`);
           }}
-          color="error"
           variant="contained"
         >
-          <DeleteOutlineOutlined />
-        </Button>
-        <Button onClick={() => {navigate( `/congé/${leave._id}`)}} variant="contained">
           <HelpOutlineOutlined />
         </Button>
-        {user.role === "admin" && (
+        {user.role === "admin" && leave.status === "review" && (
           <Button
             onClick={async () => {
               await updateLeave({

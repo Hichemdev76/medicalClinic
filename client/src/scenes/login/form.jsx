@@ -1,20 +1,10 @@
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  TextField,
-  useMediaQuery,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import { Box, Button, TextField, useMediaQuery, useTheme } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setLogin } from "state";
-// import Dropzone from "react-dropzone";
-import FlexBetween from "components/FlexBetween";
 
 const loginSchema = yup.object().shape({
   email: yup.string().email("invalid email").required("required"),
@@ -27,15 +17,13 @@ const initialValuesLogin = {
 };
 
 const Form = () => {
-  const [pageType, setPageType] = useState("login");
   const { palette } = useTheme();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const isLogin = pageType === "login";
+  const isLogin = true;
 
   const login = async (values, onSubmitProps) => {
-    console.log(values);
     const loggedInResponse = await fetch(
       `${process.env.REACT_APP_BASE_URL}/login`,
       {
@@ -44,21 +32,15 @@ const Form = () => {
         body: JSON.stringify(values),
       }
     );
-    const loggedIn = await loggedInResponse.json();
+    const { user, token } = await loggedInResponse.json();
+    
     onSubmitProps.resetForm();
-    if (loggedIn) {
-      dispatch(
-        setLogin({
-          user: loggedIn.user,
-          token: loggedIn.token,
-        })
-      );
-      navigate("/");
-    }
+    user && dispatch(setLogin({ user, token }));
+    navigate("/");
   };
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-    if (isLogin) await login(values, onSubmitProps);
+    isLogin && (await login(values, onSubmitProps));
   };
 
   return (

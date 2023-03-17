@@ -1,59 +1,43 @@
-import { Box } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Button } from "@mui/material";
+import React, { useRef, useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
+import Header from "components/Header";
+
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 const options = {
   cMapUrl: "cmaps/",
   cMapPacked: true,
 };
 export default function SinglePage(props) {
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1); //setting 1 to show fisrt page
-
-  function onDocumentLoadSuccess({ numPages }) {
-    setNumPages(numPages);
-    setPageNumber(1);
+  const { pdf, name } = props;
+  function handleDownload() {
+    window.open(`${process.env.REACT_APP_BASE_URL}/download/${name}`, "_blank");
   }
-
-  function changePage(offset) {
-    setPageNumber((prevPageNumber) => prevPageNumber + offset);
-  }
-
-  function previousPage() {
-    changePage(-1);
-  }
-
-  function nextPage() {
-    changePage(1);
-  }
-
-  const { pdf } = props;
-
   return (
-    <Box>
-      <Document
-        file={pdf}
-        options={options}
-        onLoadSuccess={onDocumentLoadSuccess}
-        height='0px'
+    <Box m="1.5rem 5rem">
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb="2rem"
       >
-        <Page pageNumber={pageNumber} />
-      </Document>
-      <div>
-        <p>
-          Page {pageNumber || (numPages ? 1 : "--")} of {numPages || "--"}
-        </p>
-        <button type="button" disabled={pageNumber <= 1} onClick={previousPage}>
-          Previous
-        </button>
-        <button
-          type="button"
-          disabled={pageNumber >= numPages}
-          onClick={nextPage}
-        >
-          Next
-        </button>
-      </div>
+        <Header
+          title={name === "install" ? "Pv installation" : "Pv guidance"}
+          subtitle={
+            name === "install"
+              ? "Displaying and Downloading Pv installation Document"
+              : "Displaying and Downloading Pv guidance Document"
+          }
+        />
+        <Button variant="contained" color="primary" onClick={handleDownload}>
+          Download File
+        </Button>
+      </Box>
+      <Box height="70vh" overflow="hidden">
+        <Document file={pdf} options={options}>
+          <Page height="600" pageNumber={1} />
+        </Document>
+      </Box>
     </Box>
   );
 }

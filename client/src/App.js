@@ -71,7 +71,7 @@ function App() {
                 }
               />
               <Route
-                path="/congé"
+                path="/leave"
                 element={
                   isAuth ? (
                     user.role !== "user" ? (
@@ -85,7 +85,7 @@ function App() {
                 }
               />
               <Route
-                path="/congé/:leaveId"
+                path="/leave/:leaveId"
                 element={
                   isAuth ? (
                     user.role !== "user" ? (
@@ -159,7 +159,12 @@ function App() {
                 element={
                   isAuth ? (
                     user.role === "admin" ? (
-                      <SinglePage pdf={process.env.REACT_APP_BASE_URL+'/assets/install.PDF'} />
+                      <SinglePage
+                        pdf={
+                          process.env.REACT_APP_BASE_URL + "/assets/install.PDF"
+                        }
+                        name="install"
+                      />
                     ) : (
                       <Navigate to="/" replace />
                     )
@@ -173,7 +178,13 @@ function App() {
                 element={
                   isAuth ? (
                     user.role === "admin" ? (
-                      <SinglePage pdf={process.env.REACT_APP_BASE_URL+"/assets/guidance.PDF"} />
+                      <SinglePage
+                        pdf={
+                          process.env.REACT_APP_BASE_URL +
+                          "/assets/guidance.PDF"
+                        }
+                        name="guidance"
+                      />
                     ) : (
                       <Navigate to="/" replace />
                     )

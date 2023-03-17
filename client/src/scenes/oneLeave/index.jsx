@@ -36,7 +36,8 @@ const OneLeave = () => {
         display="flex"
         justifyContent="space-around"
         flexDirection={isNonMobile ? "row" : "column"}
-        width={isNonMobile ? "60%" : "100%"}
+        width={isNonMobile ? "100%" : "100%"}
+        flexWrap="wrap"
         gap="30px"
       >
         {content && (
@@ -51,38 +52,59 @@ const OneLeave = () => {
               <Box
                 component="img"
                 alt="profile"
-                src={`${
-                  process.env.REACT_APP_BASE_URL + "/assets/" + user.picturePath
-                }`}
+                src={`${process.env.REACT_APP_BASE_URL + "/assets/profil.png"}`}
                 height="120px"
                 width="120px"
                 borderRadius="50%"
                 sx={{ objectFit: "cover" }}
               />
 
-              {leave.status!=="refused"&&(<Stack spacing={2} width="160px" direction="column">
-                {loggedUser.role ===
-                  "admin"&&(
-                    <Button variant="outlined" color="success" onClick={async () => {
-              await updateLeave({
-                id: leave._id,
-                updateBody: { status: "accepted" },
-              });
-            }}>
+              {leave.status === "review" && (
+                <Stack spacing={2} width="160px" direction="column">
+                  {loggedUser.role === "admin" && (
+                    <Button
+                      variant="outlined"
+                      color="success"
+                      onClick={async () => {
+                        await updateLeave({
+                          id: leave._id,
+                          updateBody: { status: "accepted" },
+                        });
+                      }}
+                    >
                       Accept
                     </Button>
                   )}
-                {(loggedUser._id === leave.creatorId || loggedUser.role === "admin") && (
-                  <Button onClick={async () => {
-              await updateLeave({
-                id: leave._id,
-                updateBody: { status: "refused" },
-              });
-            }} variant="contained" color="error">
-                    Refuse
-                  </Button>
-                )}
-              </Stack>)}
+                  {loggedUser.role === "admin" && (
+                    <Button
+                      onClick={async () => {
+                        await updateLeave({
+                          id: leave._id,
+                          updateBody: { status: "refused" },
+                        });
+                      }}
+                      variant="contained"
+                      color="error"
+                    >
+                      Refuse
+                    </Button>
+                  )}
+                  {loggedUser._id === leave.creatorId && (
+                    <Button
+                      onClick={async () => {
+                        await updateLeave({
+                          id: leave._id,
+                          updateBody: { status: "canceled" },
+                        });
+                      }}
+                      variant="contained"
+                      color="error"
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                </Stack>
+              )}
             </Box>
             <Box>
               <Header
